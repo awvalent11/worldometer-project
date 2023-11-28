@@ -6,6 +6,9 @@ import pandas as pd
 # from itemadapter import ItemAdapter
 import psycopg2 as psy
 
+from spiders import worldpopulation
+
+
 class WorldometersPipeline:
 
     # CONNECTING SPIDER WITH THE POSTGRES DATABASE
@@ -17,7 +20,7 @@ class WorldometersPipeline:
             host= 'localhost',
             user= 'postgres',
             password= 'password',
-            database= 'worldometers'
+            database= 'worldmeters'
         )
         # CREATING CURSOR
         self.curr= self.connection.cursor()
@@ -27,8 +30,9 @@ class WorldometersPipeline:
         # CREATING TABLE IN DATABASE
         self.curr.execute(''' 
         CREATE TABLE IF NOT EXISTS world_population(
+            id SERIAL NOT NULL PRIMARY KEY,
             scraped_date TIMESTAMP,
-            year DATE NOT NULL PRIMARY KEY,
+            year DATE,
             population INT8,
             yearly_perc_change DECIMAL,     
             yearly_change INT8,
@@ -96,11 +100,12 @@ class WorldometersPipeline:
 # useful for handling different item types with a single interface
 #from itemadapter import ItemAdapter
 
+thePipe = WorldometersPipeline()
 pakistan_pop = pd.read_csv('spiders/country_data.csv')
-WorldometersPipeline.open_spider()
+thePipe.open_spider(spider=worldpopulation)
 for index, row in pakistan_pop.iterrows():
-    WorldometersPipeline.process_item(row)
-    WorldometersPipeline.close_spider()
+    thePipe.process_item(item=row, spider=worldpopulation)
+thePipe.close_spider(spider=worldpopulation)
 
 
 #%%
