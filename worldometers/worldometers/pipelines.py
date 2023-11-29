@@ -29,7 +29,7 @@ class WorldometersPipeline:
 
         # CREATING TABLE IN DATABASE
         self.curr.execute(''' 
-        CREATE TABLE IF NOT EXISTS world_population(
+        CREATE TABLE IF NOT EXISTS worldmeters(
             id SERIAL NOT NULL PRIMARY KEY,
             scraped_date TIMESTAMP,
             year DATE,
@@ -49,7 +49,7 @@ class WorldometersPipeline:
 
         # INSERTING VALUES INTO THE DATABASE
         self.curr.execute('''
-            INSERT INTO world_population (
+            INSERT INTO worldmeters (
                 scraped_date, 
                 year, 
                 population, 
